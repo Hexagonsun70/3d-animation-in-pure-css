@@ -1,10 +1,13 @@
 :root {
   --boxcolor: #0ff7;
+  --rotate-speed: 30s;
+  --bounce-speed: 2s;
 }
 
 body {
   background-color: #000;
   min-height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,6 +19,11 @@ body {
 .scene {
   position: relative;
   transform-style: preserve-3d;
+  animation: scene-rotate var(--rotate-speed) infinite linear;
+
+  @keyframes scene-rotate {
+    to { transform: rotateY(360deg); }
+  }
 }
 
 .ball {
@@ -31,10 +39,29 @@ body {
     circle at top,
     lightblue, 50%, #000
   );
+    animation:
+    ball-bounce var(--bounce-speed) infinite ease-out,
+    scene-rotate var(--rotate-speed) infinite linear reverse;
+
+    @keyframes ball-bounce {
+      0%, 100% { bottom: 0.5em; }
+      50%  { bottom: 3em; animation-timing-function: ease-in; }
+    }
 }
 
 .ball-shadow {
   position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#0007, #0000 50%);
+
+  animation: ball-shadow var(--bounce-speed) infinite ease-out;
+
+
+  @keyframes ball-shadow {
+    0%, 8%, 93.5%, 100% { transform: scale(1); opacity: 1; }
+    50%  { transform: scale(2); opacity: 0.5; animation-timing-function: ease-in; }
+  }
 }
 
 .cube {
@@ -42,8 +69,15 @@ body {
   height: 2em;
 
   position: absolute;
-  top: -1em;
+  bottom: -1em;
   left: -1em;
+
+  animation: cube-height var(--bounce-speed) infinite linear;
+
+  @keyframes cube-height {
+    0%, 100% { height: 1.5em; }
+    8%, 93.5%  { height: 2em; }
+  }
 
   .front, .right, .back, .left {
     position: absolute;
@@ -71,7 +105,8 @@ body {
     position: absolute;
     width: 2em;
     height: 2em;
-    background: #0007;
+    background: var(--boxcolor);
+    filter: brightness(20%);
     bottom: 0;
     transform: translateY(50%) rotateX(90deg);
     box-shadow: 0 0 0.5em #000;
